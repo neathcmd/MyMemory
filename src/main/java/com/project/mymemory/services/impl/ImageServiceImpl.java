@@ -1,4 +1,4 @@
-package com.project.mymemory.service.impl;
+package com.project.mymemory.services.impl;
 
 
 import lombok.RequiredArgsConstructor;

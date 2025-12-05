@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MyMemoryApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MyMemoryApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MyMemoryApplication.class, args);
+    }
 
 }

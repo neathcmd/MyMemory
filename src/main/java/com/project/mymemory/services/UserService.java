@@ -1,7 +1,7 @@
 package com.project.mymemory.services;
 
-import com.project.mymemory.dto.AuthRequest;
-import com.project.mymemory.dto.RegisterRequest;
+import com.project.mymemory.dto.request.AuthRequest;
+import com.project.mymemory.dto.request.RegisterRequest;
 import com.project.mymemory.entitys.User;
 import com.project.mymemory.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+
+import static com.project.mymemory.dto.response.Errors.notFound;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +28,8 @@ public class UserService {
     }
 
     public User getById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(() -> notFound("User with" + id + "not found."));
     }
 
     public User create(User user) {
@@ -44,7 +47,8 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        userRepository.deleteById(id);
+        User existUser = getById(id);
+        userRepository.deleteById(existUser.getId());
     }
 
     // -------------------------

@@ -1,6 +1,6 @@
 package com.project.mymemory.controllers;
 
-import com.project.mymemory.dto.ApiResponse;
+import com.project.mymemory.dto.response.ApiResponse;
 import com.project.mymemory.entitys.User;
 import com.project.mymemory.services.UserService;
 
@@ -17,27 +17,42 @@ public class UserController {
 
     @GetMapping
     public ApiResponse<List<User>> getAllUsers() {
-        return new ApiResponse<>("Get user successfully", userService.getAll());
+        return new ApiResponse<>(
+                "Users fetched successfully",
+                userService.getAll()
+        );
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getById(id);
+    public ApiResponse<User> getUserById(@PathVariable Long id) {
+        return new ApiResponse<>(
+                "User fetched successfully",
+                userService.getById(id) // service already throws custom notFound
+        );
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.create(user);
+    public ApiResponse<User> createUser(@RequestBody User user) {
+        return new ApiResponse<>(
+                "User created successfully",
+                userService.create(user)
+        );
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.update(id, user);
+    public ApiResponse<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        return new ApiResponse<>(
+                "User updated successfully",
+                userService.update(id, user)
+        );
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
-        userService.delete(id);
-        return "User delete successfully";
+    public ApiResponse<String> deleteUser(@PathVariable Long id) {
+        userService.delete(id); // if not found → custom error triggers
+        return new ApiResponse<>(
+                "User deleted successfully",
+                null
+        );
     }
 }

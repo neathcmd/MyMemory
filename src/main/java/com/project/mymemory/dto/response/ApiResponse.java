@@ -1,4 +1,4 @@
-package com.project.mymemory.dto;
+package com.project.mymemory.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

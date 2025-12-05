@@ -1,7 +1,7 @@
 package com.project.mymemory.controllers;
 
-import com.project.mymemory.dto.AuthRequest;
-import com.project.mymemory.dto.RegisterRequest;
+import com.project.mymemory.dto.request.AuthRequest;
+import com.project.mymemory.dto.request.RegisterRequest;
 import com.project.mymemory.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

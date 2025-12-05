@@ -50,44 +50,4 @@ public class UserService {
         User existUser = getById(id);
         userRepository.deleteById(existUser.getId());
     }
-
-    // -------------------------
-    // AUTH METHODS
-    // -------------------------
-
-    public Object register(RegisterRequest request) {
-
-        // check email
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return "Email is already taken!";
-        }
-
-        // check username
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return "Username is already taken!";
-        }
-
-        // create new user
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setFullname(request.getFullname());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        return userRepository.save(user);
-    }
-
-    public String login(AuthRequest request) {
-
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        boolean isMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
-        if (!isMatch) {
-            throw new RuntimeException("Invalid credentials");
-        }
-
-        // TODO: Replace with real JWT
-        return "Login successful!";
-    }
 }

@@ -2,17 +2,17 @@ package com.project.mymemory.controllers;
 
 import com.project.mymemory.dto.request.AuthRequest;
 import com.project.mymemory.dto.request.RegisterRequest;
-import com.project.mymemory.services.UserService;
+import com.project.mymemory.services.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService userService;
 
-    public AuthController(UserService userService) {
+    public AuthController(AuthService userService) {
         this.userService = userService;
     }
 

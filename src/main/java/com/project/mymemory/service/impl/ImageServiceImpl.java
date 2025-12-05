@@ -45,6 +45,7 @@ public class ImageServiceImpl implements ImageService {
                 throw new IllegalArgumentException("Failed to upload file.");
             }
         } else {
+            assert url != null;
             finalUrl = url.trim();
         }
 

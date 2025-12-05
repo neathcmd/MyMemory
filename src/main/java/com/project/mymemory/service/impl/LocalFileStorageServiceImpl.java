@@ -1,4 +1,4 @@
-package com.project.mymemory.impl;
+package com.project.mymemory.service.impl;
 
 
 
@@ -13,7 +13,6 @@ import java.nio.file.*;
 public class LocalFileStorageServiceImpl implements FileStorageService {
 
     private final Path storagePath;
-    private final String baseUrl = "/uploads/";
 
     public LocalFileStorageServiceImpl() throws IOException {
         this.storagePath = Paths.get("uploads").toAbsolutePath().normalize();
@@ -36,6 +35,7 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
 
         Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
 
+        String baseUrl = "/uploads/";
         return baseUrl + safeName;
     }
 }

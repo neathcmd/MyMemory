@@ -1,12 +1,14 @@
 package com.project.mymemory.entitys;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table( name = "memories")
+@Data
 public class Memory {
 
     @Id
@@ -24,5 +26,4 @@ public class Memory {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 }

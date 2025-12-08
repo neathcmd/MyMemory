@@ -2,7 +2,7 @@ package com.project.mymemory.controllers;
 
 import com.project.mymemory.dto.response.ApiResponse;
 import com.project.mymemory.entitys.User;
-import com.project.mymemory.services.UserService;
+import com.project.mymemory.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,16 +11,17 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
+@SuppressWarnings("unused")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     // ============ GET ALL ============ //
     @GetMapping
     public ApiResponse<List<User>> getAllUsers() {
         return new ApiResponse<>(
                 "Users retrieved successfully.",
-                userService.getAll()
+                userServiceImpl.getAll()
         );
     }
 
@@ -29,7 +30,7 @@ public class UserController {
     public ApiResponse<User> getUserById(@PathVariable Long id) {
         return new ApiResponse<>(
                 "User retrieved successfully.",
-                userService.getById(id)
+                userServiceImpl.getById(id)
         );
     }
 
@@ -38,7 +39,7 @@ public class UserController {
     public ApiResponse<User> createUser(@RequestBody User user) {
         return new ApiResponse<>(
                 "User created successfully.",
-                userService.create(user)
+                userServiceImpl.create(user)
         );
     }
 
@@ -50,14 +51,14 @@ public class UserController {
     ) {
         return new ApiResponse<>(
                 "User updated successfully.",
-                userService.update(id, updatedUser)
+                userServiceImpl.update(id, updatedUser)
         );
     }
 
     // ============ DELETE USER ============ //
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteUser(@PathVariable Long id) {
-        userService.delete(id);
+        userServiceImpl.delete(id);
         return new ApiResponse<>(
                 "User deleted successfully.",
                 null

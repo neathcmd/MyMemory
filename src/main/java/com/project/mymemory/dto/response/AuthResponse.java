@@ -1,14 +1,15 @@
 package com.project.mymemory.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor  // generates constructor with all fields
+@NoArgsConstructor   // generates empty constructor for JSON
 public class AuthResponse {
+
     private String token;
     private String message;
-
-    public AuthResponse(String token, String s) {
-    }
+    private UserResponse user; // <— NEW: user object
 }

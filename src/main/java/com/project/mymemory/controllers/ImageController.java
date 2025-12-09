@@ -2,7 +2,7 @@ package com.project.mymemory.controllers;
 
 import com.project.mymemory.dto.response.ApiResponse;
 import com.project.mymemory.dto.response.ImageResponseDto;
-import com.project.mymemory.services.ImageService;
+import com.project.mymemory.services.impl.ImageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageController {
 
-    private final ImageService imageService;
+    private final ImageServiceImpl imageServiceImpl;
 
     // Upload image
     @PostMapping("/upload")
@@ -23,7 +23,7 @@ public class ImageController {
             @RequestParam(required = false) String url,
             @RequestParam(required = false) MultipartFile file
     ) {
-        ImageResponseDto imageDto = imageService.uploadImage(url, file);
+        ImageResponseDto imageDto = imageServiceImpl.uploadImage(url, file);
         ApiResponse<ImageResponseDto> response = new ApiResponse<>("Image uploaded successfully", imageDto);
         return ResponseEntity.ok(response);
     }
@@ -31,7 +31,7 @@ public class ImageController {
     // Get all images
     @GetMapping
     public ResponseEntity<ApiResponse<List<ImageResponseDto>>> getAll() {
-        List<ImageResponseDto> images = imageService.getAllImages();
+        List<ImageResponseDto> images = imageServiceImpl.getAllImages();
         ApiResponse<List<ImageResponseDto>> response = new ApiResponse<>("All images fetched successfully", images);
         return ResponseEntity.ok(response);
     }

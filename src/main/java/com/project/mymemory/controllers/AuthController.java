@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @SuppressWarnings("unused")
 public class AuthController {
 
+    // code
+
     private final AuthServiceImpl authServiceImpl;
 
     @PostMapping("/register")

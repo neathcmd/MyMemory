@@ -1,6 +1,5 @@
 package com.project.mymemory.services.impl;
 
-import com.project.mymemory.dto.response.ApiException;
 import com.project.mymemory.dto.response.ErrorsException;
 import com.project.mymemory.dto.response.ImageResponseDto;
 import com.project.mymemory.entitys.Image;
@@ -63,15 +62,14 @@ public class ImageServiceImpl implements ImageService {
             log.info("Using provided URL: {}", finalUrl);
         }
 
-        // Save to DB
+        // Save to DB without builder
         try {
-            Image saved = imageRepository.save(
-                    Image.builder()
-                            .url(finalUrl)
-                            .fileName(fileName)
-                            .createdAt(LocalDateTime.now())
-                            .build()
-            );
+            Image image = new Image();
+            image.setUrl(finalUrl);
+            image.setFileName(fileName);
+            image.setCreatedAt(LocalDateTime.now());
+
+            Image saved = imageRepository.save(image);
             return new ImageResponseDto(saved.getId(), saved.getUrl(), saved.getFileName());
         } catch (Exception e) {
             log.error("Failed to save image: {}", e.getMessage(), e);

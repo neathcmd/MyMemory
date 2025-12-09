@@ -78,5 +78,4 @@ public class MemoryServiceImpl implements MemoryService {
     public List<Memory> getAllByUser(Long userId) {
         return memoryRepository.findByUserId(userId);
     }
-
 }

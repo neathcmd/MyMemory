@@ -1,5 +1,6 @@
 package com.project.mymemory.entitys;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -25,5 +26,6 @@ public class Memory {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 }

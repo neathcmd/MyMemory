@@ -20,7 +20,7 @@ public class UserController {
     @GetMapping
     public ApiResponse<List<User>> getAllUsers() {
         return new ApiResponse<>(
-                "Users retrieved successfully.",
+                "Get users successfully.",
                 userServiceImpl.getAll()
         );
     }
@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ApiResponse<User> getUserById(@PathVariable Long id) {
         return new ApiResponse<>(
-                "User retrieved successfully.",
+                "Get users successfully.",
                 userServiceImpl.getById(id)
         );
     }

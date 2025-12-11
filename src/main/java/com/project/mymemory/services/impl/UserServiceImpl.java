@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.project.mymemory.dto.response.ErrorsException.badRequest;
-import static com.project.mymemory.dto.response.ErrorsException.notFound;
+import static com.project.mymemory.exception.ErrorsException.badRequest;
+import static com.project.mymemory.exception.ErrorsException.notFound;
 
 @Service
 @RequiredArgsConstructor

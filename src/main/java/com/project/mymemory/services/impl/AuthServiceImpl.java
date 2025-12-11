@@ -3,16 +3,19 @@ package com.project.mymemory.services.impl;
 import com.project.mymemory.dto.request.AuthRequest;
 import com.project.mymemory.dto.request.RegisterRequest;
 import com.project.mymemory.dto.response.AuthResponse;
+import com.project.mymemory.dto.response.RegisterResponse;
 import com.project.mymemory.dto.response.UserResponse;
 import com.project.mymemory.entitys.User;
 import com.project.mymemory.repository.UserRepository;
 import com.project.mymemory.services.AuthService;
+import com.project.mymemory.services.JwtService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.project.mymemory.dto.response.ErrorsException.badRequest;
-import static com.project.mymemory.dto.response.ErrorsException.notFound;
+import static com.project.mymemory.exception.ErrorsException.badRequest;
+import static com.project.mymemory.exception.ErrorsException.notFound;
 
 @Service
 @RequiredArgsConstructor
@@ -20,15 +23,11 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    // Fake JWT generator for now
-    private String generateFakeJwt() {
-        return "JWT_TOKEN_PLACEHOLDER";
-    }
+    private final JwtService jwtService;
 
     // ---------------- REGISTER ---------------- //
     @Override
-    public AuthResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
 
         validateRegisterRequest(request);
 
@@ -38,22 +37,21 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("user");
 
         userRepository.save(user);
-
-        // Create token
-        String token = generateFakeJwt();
 
         // Convert saved User to UserResponse DTO
         UserResponse userRes = new UserResponse(
                 user.getId(),
                 user.getFullname(),
                 user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRole()
         );
 
         // Return AuthResponse (token + msg + user)
-        return new AuthResponse(token, "Registration successful.", userRes);
+        return new RegisterResponse("Registration successful.", userRes);
     }
 
 
@@ -70,14 +68,20 @@ public class AuthServiceImpl implements AuthService {
             throw badRequest("Invalid email or password.");
         }
 
-        String token = generateFakeJwt();
-
         // Map entity -> response DTO
         UserResponse userRes = new UserResponse(
                 user.getId(),
                 user.getFullname(),
                 user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRole()
+        );
+
+        // Create token
+        String token = jwtService.generateToken(
+                user.getId().toString(),
+                user.getEmail(),
+                user.getRole()
         );
 
         return new AuthResponse(token, "Login successful.", userRes);

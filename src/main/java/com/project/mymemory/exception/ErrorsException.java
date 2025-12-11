@@ -1,4 +1,4 @@
-package com.project.mymemory.dto.response;
+package com.project.mymemory.exception;
 
 // ======= ERROR FACTORY ======= //
 public final class ErrorsException {

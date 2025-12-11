@@ -19,7 +19,7 @@ public class Memory {
     private Long categoryId;
 
     // This field is ONLY for receiving JSON like "category": "sport"
-    @Transient
+//    @Transientuser
     private String category;   // <- JSON category name
 
     private String title;

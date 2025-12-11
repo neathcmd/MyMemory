@@ -1,23 +1,13 @@
-package com.project.mymemory.dto.response;
+package com.project.mymemory.exception;
 
-import lombok.Getter;
+import com.project.mymemory.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@Getter
-public class ApiException extends RuntimeException {
-    private final int statusCode;
-
-    public ApiException(int statusCode, String message) {
-        super(message);
-        this.statusCode = statusCode;
-    }
-}
-
-// ======= GLOBAL EXCEPTION HANDLER (NOT public) ======= //
 @RestControllerAdvice
-class GlobalExceptionHandler {
+public class GlobalExceptionHandler {
+
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiResponse<String>> handleApiException(ApiException ex) {
         return ResponseEntity
@@ -27,8 +17,9 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleUnexpected(Exception ex) {
+//        ex.printStackTrace();
         return ResponseEntity
                 .status(500)
-                .body(new ApiResponse<>("Internal server error", null));
+                .body(new ApiResponse<>("Internal server error.", null));
     }
 }

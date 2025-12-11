@@ -25,7 +25,7 @@ public class User {
     @Email(message = "Email should be valid and contain @")
     private String email;
     private String password;
-//    private String role;
+    private String role = "user";
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.project.mymemory.dto.response.ErrorsException.notFound;
+import static com.project.mymemory.exception.ErrorsException.notFound;
 
 @RestController
 @RequiredArgsConstructor

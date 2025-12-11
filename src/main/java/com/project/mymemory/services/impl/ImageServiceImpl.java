@@ -1,7 +1,7 @@
 package com.project.mymemory.services.impl;
 
 import com.project.mymemory.dto.request.ImageUrlRequestDto;
-import com.project.mymemory.dto.response.ErrorsException;
+import com.project.mymemory.exception.ErrorsException;
 import com.project.mymemory.dto.response.ImageResponseDto;
 import com.project.mymemory.entitys.Image;
 import com.project.mymemory.repository.ImageRepository;

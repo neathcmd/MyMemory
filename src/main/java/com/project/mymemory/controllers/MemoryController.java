@@ -1,6 +1,7 @@
 package com.project.mymemory.controllers;
 
 import com.project.mymemory.dto.response.ApiResponse;
+import com.project.mymemory.entitys.Category;
 import com.project.mymemory.entitys.Memory;
 import com.project.mymemory.services.impl.MemoryServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -14,28 +15,35 @@ import static com.project.mymemory.exception.ErrorsException.notFound;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/memories")
+@SuppressWarnings("unused")
 public class MemoryController {
 
     private final MemoryServiceImpl memoryServiceImpl;
 
     @GetMapping
     public ApiResponse<List<Memory>> getAll() {
-        return new ApiResponse<>("Get memories successfully", memoryServiceImpl.getAll());
+        return new ApiResponse<>(200,
+                "Get memories successfully",
+                memoryServiceImpl.getAll()
+        );
     }
 
     // GET BY ID
     @GetMapping("/{id}")
-    public ApiResponse<Memory> getMemoryById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Memory>> getMemoryById(@PathVariable Long id) {
         Memory memory = memoryServiceImpl.getById(id);
 
         if (memory == null) {
             throw notFound("Memory not found.");
         }
 
-        return new ApiResponse<>(
+        ApiResponse<Memory> response = new ApiResponse<>(
+                200,
                 "Get memory successfully.",
                 memory
         );
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/{userId}")
@@ -45,7 +53,10 @@ public class MemoryController {
     ) {
         Memory created = memoryServiceImpl.create(userId, memory);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>("Create memory successfully", created));
+                .body(new ApiResponse<>(201,
+                        "Create memory successfully",
+                        created
+                ));
     }
 
     @PutMapping("/{userId}/{memoryId}")
@@ -54,7 +65,10 @@ public class MemoryController {
             @PathVariable Long memoryId,
             @RequestBody Memory memory
     ) {
-        return new ApiResponse<>("Update memory successfully", memoryServiceImpl.update(userId, memoryId, memory));
+        return new ApiResponse<>(200,
+                "Update memory successfully",
+                memoryServiceImpl.update(userId, memoryId, memory)
+        );
     }
 
     @DeleteMapping("/{userId}/{memoryId}")
@@ -62,6 +76,9 @@ public class MemoryController {
             @PathVariable Long userId,
             @PathVariable Long memoryId
     ) {
-        return new ApiResponse<>("Delete memory successfully", memoryServiceImpl.delete(userId, memoryId));
+        return new ApiResponse<>(200,
+                "Delete memory successfully",
+                memoryServiceImpl.delete(userId, memoryId)
+        );
     }
 }

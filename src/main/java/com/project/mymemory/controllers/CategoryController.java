@@ -29,6 +29,7 @@ public class CategoryController {
         }
 
         return new ApiResponse<>(
+                200,
                 "Get all categories successfully",
                 categories
         );
@@ -38,6 +39,7 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ApiResponse<Category> getCategoryById(@PathVariable Long id) {
         return new ApiResponse<>(
+                200,
                 "Get categories successfully",
                 categoryServiceImpl.getById(id)
         );
@@ -47,6 +49,7 @@ public class CategoryController {
     @PostMapping
     public ApiResponse<Category> createCategory(@RequestBody Category category) {
         return new ApiResponse<>(
+                201,
                 "Category create successfully",
                 categoryServiceImpl.create(category)
         );
@@ -59,6 +62,7 @@ public class CategoryController {
         @RequestBody Category updatedCategory
     ) {
         return new ApiResponse<>(
+                200,
                 "Category update successfully",
                 categoryServiceImpl.update(id, updatedCategory)
         );
@@ -68,7 +72,10 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ApiResponse<String> delete(@PathVariable Long id) {
         categoryServiceImpl.delete(id); // delete the category
-        return new ApiResponse<>("Delete memory successfully", "Deleted category with id: " + id);
+        return new ApiResponse<>(200,
+                "Delete memory successfully",
+                "Deleted category with id: " + id
+        );
     }
 
 }

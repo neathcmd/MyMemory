@@ -25,6 +25,7 @@ public class ImageController {
         ImageResponseDto imageDto = imageServiceIml.uploadImage(requestDto);
 
         ApiResponse<ImageResponseDto> response = new ApiResponse<>(
+                201,
                 "Image uploaded successfully",
                 imageDto
         );
@@ -37,6 +38,7 @@ public class ImageController {
         List<ImageResponseDto> images = imageServiceIml.getAllImages();
 
         ApiResponse<List<ImageResponseDto>> response = new ApiResponse<>(
+                200,
                 "All images fetched successfully",
                 images
         );

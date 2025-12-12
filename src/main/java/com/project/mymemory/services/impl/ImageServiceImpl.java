@@ -53,6 +53,7 @@ public class ImageServiceImpl implements ImageService {
         }
         // URL only
         else {
+            assert url != null;
             finalUrl = url.trim();
             try {
                 URL validated = new URL(finalUrl);

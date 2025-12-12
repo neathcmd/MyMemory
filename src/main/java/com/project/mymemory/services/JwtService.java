@@ -35,39 +35,27 @@ public class JwtService {
 
     // Convert "7d", "1h", "30m" into milliseconds
     private long getExpirationMs() {
-        String exp = expirationTime.toLowerCase();
-
-        if (exp.endsWith("d")) {
-            return Duration.ofDays(
-                    Long.parseLong(exp.replace("d", "")))
-                    .toMillis();
-        } else if (exp.endsWith("h")) {
-            return Duration.ofHours(
-                    Long.parseLong(exp.replace("h", "")))
-                    .toMillis();
-        } else if (exp.endsWith("m")) {
-            return Duration.ofMinutes(
-                    Long.parseLong(exp.replace("m", "")))
-                    .toMillis();
-        } else {
-            return Long.parseLong(exp); // fallback
-        }
+        return Duration.parse("P" + expirationTime.toUpperCase()).toMillis();
     }
 
     // Pass userId, email, and optional role
     public String generateToken(String userId, String email, String role) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", userId); // Add userId to JWT payload
+        claims.put("userId", userId);
+        claims.put("email", email);
 
         if (role != null && !role.isBlank()) {
-            claims.put("role", role);  // Add role if provided
+            claims.put("role", role);
         }
 
         return Jwts.builder()
                 .claims(claims)                           // Add custom data
-                .subject(email)                        // Set subject (username)
-                .expiration(new Date(System.currentTimeMillis() + getExpirationMs())) // Expire time
-                .signWith(getSignKey(), Jwts.SIG.HS512) // Sign the token using your secret key
-                .compact();                                // Final token string
+                .subject("sub")
+                // Expire time
+                .expiration(new Date(System.currentTimeMillis() + getExpirationMs()))
+                // Sign the token using your secret key
+                .signWith(getSignKey(), Jwts.SIG.HS512)
+                // Final token string
+                .compact();
     }
 }

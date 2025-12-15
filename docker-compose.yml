@@ -3,7 +3,7 @@ version: "3.9"
 services:
   db:
     image: postgres:16
-    container_name: postgres-db
+    container_name: mymemory
     restart: unless-stopped
     env_file:
       - .env
@@ -21,7 +21,7 @@ services:
 
   app:
     build: .
-    container_name: spring-app
+    container_name: mymemoryproject
     restart: unless-stopped
     env_file:
       - .env

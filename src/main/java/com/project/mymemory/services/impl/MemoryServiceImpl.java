@@ -2,16 +2,20 @@ package com.project.mymemory.services.impl;
 
 import com.project.mymemory.entitys.Category;
 import com.project.mymemory.entitys.Memory;
-import com.project.mymemory.repository.CategoryRepository;
 import com.project.mymemory.repository.MemoryRepository;
 import com.project.mymemory.repository.UserRepository;
 import com.project.mymemory.services.MemoryService;
+import com.project.mymemory.repository.CategoryRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.project.mymemory.dto.response.ErrorsException.*;
+import static com.project.mymemory.exception.ErrorsException.notFound;
+import static com.project.mymemory.exception.ErrorsException.unauthorized;
+import static com.project.mymemory.exception.ErrorsException.badRequest;
+
 
 @Service
 @RequiredArgsConstructor
@@ -21,114 +25,69 @@ public class MemoryServiceImpl implements MemoryService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    // ===================== GET ALL ===================== //
     @Override
     public List<Memory> getAll() {
-        try {
-            return memoryRepository.findAll();
-        } catch (Exception e) {
-            throw internal("Failed to fetch memories: " + e.getMessage());
-        }
+        return memoryRepository.findAll();
     }
 
-    // ===================== GET BY ID ===================== //
     @Override
-    public Memory getById(Long memoryId) {
-        return memoryRepository.findById(memoryId)
-                .orElseThrow(() -> notFound("Memory with ID " + memoryId + " not found."));
+    public Memory getById(Long id) {
+        return memoryRepository.findById(id)
+                .orElseThrow(() -> notFound("Memory with ID" + id + "not found."));
     }
 
-    // ===================== CREATE ===================== //
     @Override
     public Memory create(Long userId, Memory memory) {
         var user = userRepository.findById(userId)
-                .orElseThrow(() -> notFound("User not found."));
+                .orElseThrow(() -> notFound("Unable to create memory. Please create your account. And try again."));
 
-        if (memory.getTitle() == null || memory.getTitle().isBlank()) {
-            throw validation("Memory title cannot be empty.");
+        String categoryName = memory.getCategory();
+
+        if (categoryName == null || categoryName.isBlank()) {
+            throw badRequest("Category name is required.");
         }
 
-        if (memory.getCategory() != null) {
-            Category category = categoryRepository.findByName(memory.getCategory())
-                    .orElseThrow(() -> notFound("Category not found."));
-            memory.setCategoryId(category.getId());
-        }
+        Category category = categoryRepository.findByName(categoryName)
+                        .orElseThrow(() -> badRequest(
+                                "Category " + categoryName + " does not exist. Please create the category first."
+                        ));
 
+        memory.setCategoryId(category.getId());
         memory.setUser(user);
-
-        try {
-            return memoryRepository.save(memory);
-        } catch (Exception e) {
-            throw internal("Failed to create memory: " + e.getMessage());
-        }
+        return memoryRepository.save(memory);
     }
 
-    // ===================== UPDATE ===================== //
     @Override
     public Memory update(Long userId, Long memoryId, Memory updated) {
-        Memory memory = memoryRepository.findById(memoryId)
-                .orElseThrow(() -> notFound("Memory with ID " + memoryId + " not found."));
+        var memory = memoryRepository.findById(memoryId)
+                .orElseThrow(() -> notFound("Memory with this ID " + memoryId + " not found."));
 
         if (!memory.getUser().getId().equals(userId)) {
-            throw forbidden("You are not allowed to update this memory.");
-        }
-
-        if (updated.getTitle() == null || updated.getTitle().isBlank()) {
-            throw validation("Memory title cannot be empty.");
+            throw unauthorized("unauthorized");
         }
 
         memory.setTitle(updated.getTitle());
         memory.setContent(updated.getContent());
 
-        if (updated.getCategory() != null) {
-            Category category = categoryRepository.findByName(updated.getCategory())
-                    .orElseThrow(() -> notFound("Category not found."));
-            memory.setCategory(updated.getCategory());
-            memory.setCategoryId(category.getId());
-        }
-
-        try {
-            return memoryRepository.save(memory);
-        } catch (Exception e) {
-            throw internal("Failed to update memory: " + e.getMessage());
-        }
+        memoryRepository.save(memory);
+        return memory;
     }
 
-    // ===================== DELETE ===================== //
     @Override
     public String delete(Long userId, Long memoryId) {
-        Memory memory = memoryRepository.findById(memoryId)
+
+        var memory = memoryRepository.findById(memoryId)
                 .orElseThrow(() -> notFound("Memory not found."));
 
-        if (!memory.getUser().getId().equals(userId)) {
-            throw forbidden("You are not allowed to delete this memory.");
-        }
+        memoryRepository.delete(memory);
 
-        try {
-            memoryRepository.delete(memory);
-            return "Memory deleted successfully.";
-        } catch (Exception e) {
-            throw internal("Failed to delete memory: " + e.getMessage());
-        }
+        return "Memory deleted successfully.";
     }
 
-    // ===================== GET ALL BY USER ===================== //
+
+
     @Override
     public List<Memory> getAllByUser(Long userId) {
-        try {
-            List<Memory> memories = memoryRepository.findByUserId(userId);
-
-            // Fill category name from categoryId
-            for (Memory m : memories) {
-                if (m.getCategoryId() != null) {
-                    categoryRepository.findById(m.getCategoryId())
-                            .ifPresent(category -> m.setCategory(category.getName()));
-                }
-            }
-
-            return memories;
-        } catch (Exception e) {
-            throw internal("Failed to fetch user memories: " + e.getMessage());
-        }
+        return memoryRepository.findByUserId(userId);
     }
 }

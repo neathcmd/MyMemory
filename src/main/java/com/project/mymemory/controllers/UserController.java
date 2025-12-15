@@ -20,6 +20,7 @@ public class UserController {
     @GetMapping
     public ApiResponse<List<User>> getAllUsers() {
         return new ApiResponse<>(
+                200,
                 "Get users successfully.",
                 userServiceImpl.getAll()
         );
@@ -29,6 +30,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ApiResponse<User> getUserById(@PathVariable Long id) {
         return new ApiResponse<>(
+                200,
                 "Get users successfully.",
                 userServiceImpl.getById(id)
         );
@@ -38,6 +40,7 @@ public class UserController {
     @PostMapping
     public ApiResponse<User> createUser(@RequestBody User user) {
         return new ApiResponse<>(
+                201,
                 "User created successfully.",
                 userServiceImpl.create(user)
         );
@@ -50,6 +53,7 @@ public class UserController {
             @RequestBody User updatedUser
     ) {
         return new ApiResponse<>(
+                200,
                 "User updated successfully.",
                 userServiceImpl.update(id, updatedUser)
         );
@@ -60,6 +64,7 @@ public class UserController {
     public ApiResponse<String> deleteUser(@PathVariable Long id) {
         userServiceImpl.delete(id);
         return new ApiResponse<>(
+                200,
                 "User deleted successfully.",
                 null
         );

@@ -5,6 +5,8 @@ services:
     image: postgres:16
     container_name: mymemory
     restart: unless-stopped
+    ports:
+      - "5433:5432"
     env_file:
       - .env
     environment:

@@ -1,89 +1,14 @@
 package com.project.mymemory.services;
-
-import com.project.mymemory.dto.AuthRequest;
-import com.project.mymemory.dto.RegisterRequest;
 import com.project.mymemory.entitys.User;
-import com.project.mymemory.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+public interface UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    List<User> getAll();
 
-    // -------------------------
-    // CRUD USERS
-    // -------------------------
-    public List<User> getAll() {
-        return userRepository.findAll();
-    }
-
-    public User getById(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-    public User create(User user) {
-        return userRepository.save(user);
-    }
-
-    public User update(Long id, User request) {
-        return userRepository.findById(id).map(user -> {
-            user.setUsername(request.getUsername());
-            user.setFullname(request.getFullname());
-            user.setEmail(request.getEmail());
-            user.setPassword(request.getPassword());
-            return userRepository.save(user);
-        }).orElse(null);
-    }
-
-    public void delete(Long id) {
-        userRepository.deleteById(id);
-    }
-
-    // -------------------------
-    // AUTH METHODS
-    // -------------------------
-
-    public Object register(RegisterRequest request) {
-
-        // check email
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return "Email is already taken!";
-        }
-
-        // check username
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return "Username is already taken!";
-        }
-
-        // create new user
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setFullname(request.getFullname());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        return userRepository.save(user);
-    }
-
-    public String login(AuthRequest request) {
-
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        boolean isMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
-        if (!isMatch) {
-            throw new RuntimeException("Invalid credentials");
-        }
-
-        // TODO: Replace with real JWT
-        return "Login successful!";
-    }
+    User getById(Long id);
+    User create(User request);
+    User update(Long id, User request);
+    void delete(Long id);
 }

@@ -1,4 +1,4 @@
-package com.project.mymemory.dto;
+package com.project.mymemory.dto.request;
 
 import lombok.Data;
 

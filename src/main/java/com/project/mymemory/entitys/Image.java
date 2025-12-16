@@ -18,6 +18,5 @@ public class Image {
     private Long id;
 
     private String url;          // Final image URL (local file or external link)
-    private String fileName;     // For uploaded files only
     private LocalDateTime createdAt;
 }

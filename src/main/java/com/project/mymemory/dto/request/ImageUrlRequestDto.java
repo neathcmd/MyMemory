@@ -9,5 +9,5 @@ public class ImageUrlRequestDto {
 
     @NotBlank(message = "URL cannot be blank")
     private String url;
-    private MultipartFile file;
+
 }

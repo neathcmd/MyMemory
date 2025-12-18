@@ -1,21 +1,17 @@
 package com.project.mymemory.services.impl;
 
-import com.project.mymemory.entitys.Category;
 import com.project.mymemory.entitys.Memory;
 import com.project.mymemory.repository.MemoryRepository;
 import com.project.mymemory.repository.UserRepository;
 import com.project.mymemory.services.MemoryService;
-import com.project.mymemory.repository.CategoryRepository;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.project.mymemory.exception.ErrorsException.badRequest;
 import static com.project.mymemory.exception.ErrorsException.notFound;
 import static com.project.mymemory.exception.ErrorsException.unauthorized;
-import static com.project.mymemory.exception.ErrorsException.badRequest;
-
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +19,6 @@ public class MemoryServiceImpl implements MemoryService {
 
     private final MemoryRepository memoryRepository;
     private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
 
     @Override
     public List<Memory> getAll() {
@@ -33,61 +28,60 @@ public class MemoryServiceImpl implements MemoryService {
     @Override
     public Memory getById(Long id) {
         return memoryRepository.findById(id)
-                .orElseThrow(() -> notFound("Memory with ID" + id + "not found."));
+                .orElseThrow(() -> notFound("Memory with ID " + id + " not found."));
     }
 
     @Override
     public Memory create(Long userId, Memory memory) {
         var user = userRepository.findById(userId)
-                .orElseThrow(() -> notFound("Unable to create memory. Please create your account. And try again."));
+                .orElseThrow(() -> notFound("User not found."));
 
-        String categoryName = memory.getCategory();
-
-        if (categoryName == null || categoryName.isBlank()) {
-            throw badRequest("Category name is required.");
-        }
-
-        Category category = categoryRepository.findByName(categoryName)
-                        .orElseThrow(() -> badRequest(
-                                "Category " + categoryName + " does not exist. Please create the category first."
-                        ));
-
-        memory.setCategoryId(category.getId());
         memory.setUser(user);
         return memoryRepository.save(memory);
     }
 
     @Override
     public Memory update(Long userId, Long memoryId, Memory updated) {
-        var memory = memoryRepository.findById(memoryId)
-                .orElseThrow(() -> notFound("Memory with this ID " + memoryId + " not found."));
+        Memory memory = memoryRepository.findById(memoryId)
+                .orElseThrow(() -> notFound("Memory not found."));
 
         if (!memory.getUser().getId().equals(userId)) {
-            throw unauthorized("unauthorized");
+            throw unauthorized("Unauthorized");
         }
 
         memory.setTitle(updated.getTitle());
         memory.setContent(updated.getContent());
 
-        memoryRepository.save(memory);
-        return memory;
+        return memoryRepository.save(memory);
     }
 
     @Override
     public String delete(Long userId, Long memoryId) {
-
-        var memory = memoryRepository.findById(memoryId)
+        Memory memory = memoryRepository.findById(memoryId)
                 .orElseThrow(() -> notFound("Memory not found."));
 
-        memoryRepository.delete(memory);
+        if (!memory.getUser().getId().equals(userId)) {
+            throw unauthorized("Unauthorized");
+        }
 
+        memoryRepository.delete(memory);
         return "Memory deleted successfully.";
     }
-
-
 
     @Override
     public List<Memory> getAllByUser(Long userId) {
         return memoryRepository.findByUserId(userId);
     }
+
+    // ===== Simple Global Search =====
+    @Override
+    public List<Memory> search(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            throw badRequest("Search keyword is required.");
+        }
+        return memoryRepository.searchByKeyword(keyword.trim());
+    }
+
+
+
 }

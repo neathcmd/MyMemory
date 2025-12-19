@@ -1,45 +1,13 @@
-#version: "3.9" // removed
+version: '3.9'
 
 services:
-  db:
-    image: postgres:16
-    container_name: mymemory
-    restart: unless-stopped
-    ports:
-      - "5433:5432"
-    env_file:
-      - .env
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   app:
     build: .
     container_name: mymemoryproject
     restart: unless-stopped
-    env_file:
-      - .env
     ports:
-      - "${APP_PORT}:8080"
+      - "8081:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SERVER_PORT: 8080
-    depends_on:
-      db:
-        condition: service_healthy
     volumes:
-      - ./uploads:/app/uploads   # map uploads folder
-
-volumes:
-  pgdata:
+      - ./uploads:/app/uploads   # optional

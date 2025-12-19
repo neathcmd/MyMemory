@@ -3,6 +3,7 @@ package com.project.mymemory.entitys;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 
@@ -15,12 +16,10 @@ public class Memory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // This will store the category ID in the database
     private Long categoryId;
 
-    // This field is ONLY for receiving JSON like "category": "sport"
-//    @Transientuser
-    private String category;   // <- JSON category name
+    @Transient
+    private String category;   // for JSON only
 
     private String title;
 

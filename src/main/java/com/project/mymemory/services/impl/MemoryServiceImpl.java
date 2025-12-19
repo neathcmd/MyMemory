@@ -48,9 +48,9 @@ public class MemoryServiceImpl implements MemoryService {
         }
 
         Category category = categoryRepository.findByName(categoryName)
-                        .orElseThrow(() -> badRequest(
-                                "Category " + categoryName + " does not exist. Please create the category first."
-                        ));
+                .orElseThrow(() -> badRequest(
+                        "Category " + categoryName + " does not exist. Please create the category first."
+                ));
 
         memory.setCategoryId(category.getId());
         memory.setUser(user);
@@ -90,4 +90,14 @@ public class MemoryServiceImpl implements MemoryService {
     public List<Memory> getAllByUser(Long userId) {
         return memoryRepository.findByUserId(userId);
     }
+
+    // ===== Simple Global Search =====
+    @Override
+    public List<Memory> search(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            throw badRequest("Search keyword is required.");
+        }
+        return memoryRepository.searchByKeyword(keyword.trim());
+    }
+
 }
